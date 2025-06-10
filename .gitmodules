@@ -1,0 +1,18 @@
+[submodule "funchive-config-server"]
+	path = funchive-config-server
+	url = https://github.com/nghialt3670/funchive-config-server.git
+[submodule "funchive-discovery-server"]
+	path = funchive-discovery-server
+	url = https://github.com/nghialt3670/funchive-discovery-server.git
+[submodule "funchive-function-service"]
+	path = funchive-function-service
+	url = https://github.com/nghialt3670/funchive-function-service.git
+[submodule "funchive-gateway-server"]
+	path = funchive-gateway-server
+	url = https://github.com/nghialt3670/funchive-gateway-server.git
+[submodule "funchive-user-service"]
+	path = funchive-user-service
+	url = https://github.com/nghialt3670/funchive-user-service.git
+[submodule "funchive-web"]
+	path = funchive-web
+	url = https://github.com/nghialt3670/funchive-web.git
