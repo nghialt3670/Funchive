@@ -1,0 +1,29 @@
+services:
+  funchive-config-server:
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+
+  funchive-discovery-server:
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+
+  funchive-user-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+
+  funchive-function-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+
+  funchive-gateway-server:
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+
+  funchive-web:
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8080

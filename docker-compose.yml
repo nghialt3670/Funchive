@@ -1,0 +1,103 @@
+services:
+  funchive-config-server:
+    build:
+      context: ./funchive-config-server
+      dockerfile: Dockerfile
+    container_name: funchive-config-server
+    networks:
+      - funchive-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  funchive-discovery-server:
+    build:
+      context: ./funchive-discovery-server
+      dockerfile: Dockerfile
+    container_name: funchive-discovery-server
+    networks:
+      - funchive-network
+    depends_on:
+      funchive-config-server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  funchive-user-service:
+    build:
+      context: ./funchive-user-service
+      dockerfile: Dockerfile
+    container_name: funchive-user-service
+    networks:
+      - funchive-network
+    depends_on:
+      funchive-discovery-server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  funchive-function-service:
+    build:
+      context: ./funchive-function-service
+      dockerfile: Dockerfile
+    container_name: funchive-function-service
+    networks:
+      - funchive-network
+    depends_on:
+      funchive-discovery-server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  funchive-gateway-server:
+    build:
+      context: ./funchive-gateway-server
+      dockerfile: Dockerfile
+    container_name: funchive-gateway-server
+    networks:
+      - funchive-network
+    depends_on:
+      - funchive-discovery-server
+      - funchive-user-service
+      - funchive-function-service
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  funchive-web:
+    build:
+      context: ./funchive-web
+      dockerfile: Dockerfile
+    container_name: funchive-web
+    networks:
+      - funchive-network
+    depends_on:
+      - funchive-gateway-server
+    restart: unless-stopped
+
+networks:
+  funchive-network:
+    driver: bridge
+    name: funchive-network
+
+volumes:
+  config-server-data:
+    driver: local
