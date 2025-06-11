@@ -22,3 +22,6 @@
 	path = funchive-web
 	url = https://github.com/nghialt3670/funchive-web.git
 	branch = main
+[submodule "funchive-config-repo"]
+	path = funchive-config-repo
+	url = https://github.com/nghialt3670/funchive-config-repo.git
