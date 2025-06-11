@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Cloned repositories
+funchive-config-repo
+funchive-config-server
+funchive-discovery-server
+funchive-function-service
+funchive-gateway-server
+funchive-user-service
