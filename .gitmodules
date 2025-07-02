@@ -19,3 +19,6 @@
 [submodule "user-service"]
 	path = user-service
 	url = https://github.com/nghialt3670/funchive-user-service.git
+[submodule "web"]
+	path = web
+	url = https://github.com/nghialt3670/funchive-web.git
