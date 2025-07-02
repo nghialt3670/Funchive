@@ -39,3 +39,14 @@ funchive-discovery-server
 funchive-function-service
 funchive-gateway-server
 funchive-user-service
+
+# Environment variables
+*.env
+
+funchive-config-repo/
+funchive-config-server/
+funchive-discovery-server/
+funchive-function-service/
+funchive-gateway-server/
+funchive-sandbox-service/
+funchive-user-service/

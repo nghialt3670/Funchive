@@ -15,6 +15,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=qa
 
+  funchive-sandbox-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=qa
+      - DOCKER_HOST=tcp://docker-dind:2375
+
   funchive-gateway-server:
     ports:
       - "8080:8080"
@@ -25,5 +30,5 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - REACT_APP_API_URL=http://localhost:8080

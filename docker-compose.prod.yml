@@ -15,6 +15,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
 
+  funchive-sandbox-service:
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DOCKER_HOST=tcp://docker-dind:2375
+
   funchive-gateway-server:
     ports:
       - "8080:8080"

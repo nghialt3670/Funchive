@@ -1,4 +1,17 @@
 services:
+  docker-dind:
+    ports:
+      - "2375:2375"  # Expose Docker daemon for local development
+      - "2376:2376"  # Expose Docker TLS daemon
+    environment:
+      - DOCKER_TLS_CERTDIR=  # Disable TLS for development
+
+  kafka:
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+
   funchive-config-server:
     ports:
       - "8888:8888"
@@ -30,6 +43,15 @@ services:
       - ./funchive-function-service:/app
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+
+  funchive-sandbox-service:
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./funchive-sandbox-service:/app
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - DOCKER_HOST=tcp://docker-dind:2375  # Override for containerized development
 
   funchive-gateway-server:
     ports:
