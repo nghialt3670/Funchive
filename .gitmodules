@@ -16,6 +16,9 @@
 [submodule "sandbox-service"]
 	path = sandbox-service
 	url = https://github.com/nghialt3670/funchive-sandbox-service.git
+[submodule "storage-service"]
+	path = storage-service
+	url = https://github.com/nghialt3670/funchive-storage-service.git
 [submodule "user-service"]
 	path = user-service
 	url = https://github.com/nghialt3670/funchive-user-service.git
