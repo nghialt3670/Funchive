@@ -1,3 +1,6 @@
+[submodule "auth-server"]
+	path = auth-server
+	url = https://github.com/nghialt3670/funchive-auth-server.git
 [submodule "config-repo"]
 	path = config-repo
 	url = https://github.com/nghialt3670/funchive-config-repo.git
@@ -19,9 +22,6 @@
 [submodule "storage-service"]
 	path = storage-service
 	url = https://github.com/nghialt3670/funchive-storage-service.git
-[submodule "user-service"]
-	path = user-service
-	url = https://github.com/nghialt3670/funchive-user-service.git
 [submodule "web"]
 	path = web
 	url = https://github.com/nghialt3670/funchive-web.git
