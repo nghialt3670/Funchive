@@ -1,69 +1,104 @@
 services:
-  docker-dind:
+  funchive-auth-server:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-auth-server
+    command: ["./mvnw", "clean", "spring-boot:run"]
     ports:
-      - "2375:2375"  # Expose Docker daemon for local development
-      - "2376:2376"  # Expose Docker TLS daemon
-    environment:
-      - DOCKER_TLS_CERTDIR=  # Disable TLS for development
-
-  kafka:
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-
-  funchive-config-server:
-    ports:
-      - "8888:8888"
+      - "${FUNCHIVE_AUTH_SERVER_PORT}:9000"
     volumes:
-      - ./funchive-config-server:/app
-    environment:
-      - SPRING_PROFILES_ACTIVE=native
+      - ./auth-server:/app/funchive-auth-server
+      - maven-cache:/root/.m2
+
+  funchive-auth-postgres:
+    ports:
+      - "${FUNCHIVE_AUTH_POSTGRES_PORT}:5432"
+      
+  funchive-config-server:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-config-server
+    command: ["./mvnw", "clean", "spring-boot:run"]
+    ports:
+      - "${FUNCHIVE_CONFIG_SERVER_PORT}:8888"
+    volumes:
+      - ./config-repo:/app/funchive-config-repo
+      - ./config-server:/app/funchive-config-server
+      - maven-cache:/root/.m2
 
   funchive-discovery-server:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-discovery-server
+    command: ["./mvnw", "clean", "spring-boot:run"]
     ports:
-      - "8761:8761"
+      - "${FUNCHIVE_DISCOVERY_SERVER_PORT}:8761"
     volumes:
-      - ./funchive-discovery-server:/app
-    environment:
-      - SPRING_PROFILES_ACTIVE=native
-
-  funchive-user-service:
-    ports:
-      - "8081:8080"
-    volumes:
-      - ./funchive-user-service:/app
-    environment:
-      - SPRING_PROFILES_ACTIVE=native
-
-  funchive-function-service:
-    ports:
-      - "8082:8080"
-    volumes:
-      - ./funchive-function-service:/app
-    environment:
-      - SPRING_PROFILES_ACTIVE=native
-
-  funchive-sandbox-service:
-    ports:
-      - "8083:8080"
-    volumes:
-      - ./funchive-sandbox-service:/app
-    environment:
-      - SPRING_PROFILES_ACTIVE=native
-      - DOCKER_HOST=tcp://docker-dind:2375  # Override for containerized development
+      - ./gateway-server:/app/funchive-discovery-server
+      - maven-cache:/root/.m2
 
   funchive-gateway-server:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-gateway-server
+    command: [ "./mvnw", "clean", "spring-boot:run" ]
     ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=native
+      - "${GATEWAY_SERVER_PORT}:8080"
+    volumes:
+      - ./gateway-server:/app/funchive-gateway-server
+      - maven-cache:/root/.m2
+
+  funchive-function-service:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-function-service
+    command: ["./mvnw", "clean", "spring-boot:run"]
+    ports:
+      - "${FUNCHIVE_FUNCTION_SERVICE_PORT}:8080"
+    volumes:
+      - ./function-service:/app/funchive-function-service
+      - maven-cache:/root/.m2
+
+  funchive-function-mongo:
+    ports:
+      - "${FUNCHIVE_FUNCTION_MONGO_PORT}:27017"
+
+  funchive-sandbox-service:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-sandbox-service
+    command: [ "./mvnw", "clean", "spring-boot:run" ]
+    ports:
+      - "${FUNCHIVE_SANDBOX_SERVICE_PORT}:8080"
+    volumes:
+      - ./sandbox-service:/app/funchive-sandbox-service
+      - maven-cache:/root/.m2
+
+  funchive-storage-service:
+    image: openjdk:24-jdk-slim
+    working_dir: /app/funchive-storage-service
+    command: ["./mvnw", "clean", "spring-boot:run"]
+    ports:
+      - "${FUNCHIVE_STORAGE_SERVICE_PORT}:8080"
+    volumes:
+      - ./storage-service:/app/funchive-storage-service
+      - maven-cache:/root/.m2
+
+  funchive-storage-mongo:
+    ports:
+      - "${FUNCHIVE_STORAGE_MONGO_PORT}:27017"
 
   funchive-web:
+    image: node:18-alpine
+    working_dir: /app/funchive-web
+    command: ["npm", "start"]
     ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - REACT_APP_API_URL=http://localhost:8080
+      - "${WEB_PORT}:3000"
     volumes:
-      - ./funchive-web:/app
+      - ./web:/app/funchive-web
+      - npm-cache:/root/.npm
+
+networks:
+  funchive-network:
+    driver: bridge
+    name: funchive-network
+
+volumes:
+  maven-cache:
+    driver: local
+  npm-cache:
+    driver: local
