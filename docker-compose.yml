@@ -18,13 +18,13 @@ services:
     networks:
       - funchive-network
     environment:
-      POSTGRES_DB: ${FUNCHIVE_USER_POSTGRES_DATABASE}
-      POSTGRES_USER: ${FUNCHIVE_USER_POSTGRES_USERNAME}
-      POSTGRES_PASSWORD: ${FUNCHIVE_USER_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${FUNCHIVE_AUTH_POSTGRES_DATABASE}
+      - POSTGRES_USER=${FUNCHIVE_AUTH_POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${FUNCHIVE_AUTH_POSTGRES_PASSWORD}
     volumes:
       - funchive-auth-postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${FUNCHIVE_USER_POSTGRES_USERNAME} -d ${FUNCHIVE_USER_POSTGRES_DATABASE}"]
+      test: ["CMD-SHELL", "pg_isready -U ${FUNCHIVE_AUTH_POSTGRES_USERNAME} -d ${FUNCHIVE_AUTH_POSTGRES_DATABASE}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -88,9 +88,9 @@ services:
     networks:
       - funchive-network
     environment:
-      MONGO_INITDB_DATABASE: ${FUNCHIVE_FUNCTION_MONGO_DATABASE}
-      MONGO_INITDB_ROOT_USERNAME: ${FUNCHIVE_FUNCTION_MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${FUNCHIVE_FUNCTION_MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${FUNCHIVE_FUNCTION_MONGO_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${FUNCHIVE_FUNCTION_MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${FUNCHIVE_FUNCTION_MONGO_PASSWORD}
     volumes:
       - funchive-function-mongo-data:/data/db
     healthcheck:
@@ -131,9 +131,9 @@ services:
     networks:
       - funchive-network
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${FUNCHIVE_STORAGE_MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${FUNCHIVE_STORAGE_MONGO_INITDB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: funchive_storage
+      - MONGO_INITDB_ROOT_USERNAME=${FUNCHIVE_STORAGE_MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${FUNCHIVE_STORAGE_MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=funchive_storage
     volumes:
       - funchive-storage-mongo-data:/data/db
     healthcheck:
@@ -148,8 +148,8 @@ services:
     networks:
       - funchive-network
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
     volumes:
       - funchive-zookeeper-data:/var/lib/zookeeper/data
       - funchive-zookeeper-logs:/var/lib/zookeeper/log
@@ -167,15 +167,15 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: funchive-zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://funchive-kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=funchive-zookeeper:2181
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://funchive-kafka:29092,PLAINTEXT_HOST://localhost:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
     volumes:
       - funchive-kafka-data:/var/lib/kafka/data
     depends_on:
